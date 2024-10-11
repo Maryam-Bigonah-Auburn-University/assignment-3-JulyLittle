@@ -1,0 +1,198 @@
+//Prompt 1
+#include <iostream>
+#include <cstring>  // For strlen function
+using namespace std;
+
+const int MAX_DIGITS = 20;
+
+// Function to convert a char array to an integer array (with reversed digits)
+void convertToReversedArray(const char str[], int arr[], int len) {
+    for (int i = 0; i < len; i++) {
+        arr[i] = str[len - 1 - i] - '0';  // Convert char to int and store in reverse order
+    }
+    for (int i = len; i < MAX_DIGITS; i++) {
+        arr[i] = 0;  // Fill the rest of the array with 0s
+    }
+}
+
+// Function to add two integer arrays and store the result in the result array
+void addArrays(const int arr1[], const int arr2[], int result[]) {
+    int carry = 0;
+    for (int i = 0; i < MAX_DIGITS; i++) {
+        int sum = arr1[i] + arr2[i] + carry;
+        result[i] = sum % 10;  // Store the last digit
+        carry = sum / 10;      // Carry over the rest
+    }
+}
+
+// Function to print the result array in the correct order
+void printResult(const int result[]) {
+    bool leadingZero = true;  // To skip leading zeros
+    for (int i = MAX_DIGITS - 1; i >= 0; i--) {
+        if (result[i] != 0) {
+            leadingZero = false;
+        }
+        if (!leadingZero) {
+            cout << result[i];
+        }
+    }
+    if (leadingZero) {
+        cout << 0;  // If all digits are 0, print a single 0
+    }
+    cout << endl;
+}
+
+int main() {
+    char num1[MAX_DIGITS + 1], num2[MAX_DIGITS + 1];  // To store the input numbers as strings
+    int arr1[MAX_DIGITS] = {0}, arr2[MAX_DIGITS] = {0}, result[MAX_DIGITS] = {0};  // Arrays to store the digits
+
+    // Input the numbers
+    cout << "Enter the first number (up to 20 digits): ";
+    cin >> num1;
+    cout << "Enter the second number (up to 20 digits): ";
+    cin >> num2;
+
+    // Convert the input numbers to arrays of digits
+    int len1 = strlen(num1);
+    int len2 = strlen(num2);
+    convertToReversedArray(num1, arr1, len1);
+    convertToReversedArray(num2, arr2, len2);
+
+    // Add the two arrays
+    addArrays(arr1, arr2, result);
+
+    // Print the result
+    cout << "Sum: ";
+    printResult(result);
+
+    return 0;
+}
+
+
+//Prompt 2
+#include <iostream>
+using namespace std;
+
+// Function to display the seating chart
+void displaySeats(char seats[7][4]) {
+    cout << "Seats available:" << endl;
+    for (int row = 0; row < 7; row++) {
+        cout << row + 1 << " ";  // Display row number
+        for (int col = 0; col < 4; col++) {
+            cout << seats[row][col] << " ";  // Display seat letter (or X if taken)
+        }
+        cout << endl;
+    }
+}
+
+// Function to mark a seat as occupied
+void bookSeat(char seats[7][4], int row, char seat) {
+    int col = seat - 'A';  // Convert seat letter to column index (A = 0, B = 1, etc.)
+    seats[row - 1][col] = 'X';  // Mark seat as taken
+}
+
+// Function to check if a seat is available
+bool isSeatAvailable(char seats[7][4], int row, char seat) {
+    int col = seat - 'A';  // Convert seat letter to column index
+    return seats[row - 1][col] != 'X';  // Check if the seat is available (not 'X')
+}
+
+int main() {
+    char seats[7][4] = {
+        {'A', 'B', 'C', 'D'},
+        {'A', 'B', 'C', 'D'},
+        {'A', 'B', 'C', 'D'},
+        {'A', 'B', 'C', 'D'},
+        {'A', 'B', 'C', 'D'},
+        {'A', 'B', 'C', 'D'},
+        {'A', 'B', 'C', 'D'}
+    };
+
+    int row;
+    char seat;
+    char choice;
+    int availableSeats = 7 * 4;  // Total seats in the airplane
+
+    do {
+        displaySeats(seats);  // Show the seating chart
+
+        // Ask the user for their seat choice
+        cout << "Enter row number (1-7): ";
+        cin >> row;
+        cout << "Enter seat letter (A-D): ";
+        cin >> seat;
+
+        // Check if the seat is available
+        if (isSeatAvailable(seats, row, seat)) {
+            bookSeat(seats, row, seat);  // Book the seat
+            availableSeats--;  // Reduce the count of available seats
+            cout << "You have successfully booked seat " << row << seat << "." << endl;
+        } else {
+            cout << "Sorry, seat " << row << seat << " is already taken." << endl;
+        }
+
+        // Check if there are seats left
+        if (availableSeats == 0) {
+            cout << "No seats left! All seats are booked." << endl;
+            break;
+        }
+
+        // Ask if the user wants to book another seat
+        cout << "Do you want to book another seat? (y/n): ";
+        cin >> choice;
+
+    } while (choice == 'y' || choice == 'Y');  // Continue until the user wants to quit
+
+    cout << "Thank you for booking seats. Have a nice day!" << endl;
+
+    return 0;
+}
+
+
+//Prompt 3
+#include <iostream>
+#include <iomanip>  // For std::setw and std::left
+#include <algorithm>  // For std::sort
+using namespace std;
+
+const int MAX_ENTRIES = 50;
+
+// Function to count unique values and their frequencies
+void countFrequencies(int arr[], int n) {
+    int count = 1;  // To count occurrences of a number
+    cout << left << setw(10) << "Value" << setw(10) << "Count" << endl;
+    cout << "--------------------" << endl;
+
+    for (int i = 0; i < n; i++) {
+        // If this is the last element or the next element is different, print the count
+        if (i == n - 1 || arr[i] != arr[i + 1]) {
+            cout << left << setw(10) << arr[i] << setw(10) << count << endl;
+            count = 1;  // Reset count for the next value
+        } else {
+            count++;  // Increment count if the next element is the same
+        }
+    }
+}
+
+int main() {
+    int arr[MAX_ENTRIES];  // Array to store integers
+    int n;  // Number of entries in the array
+
+    // Input the number of entries
+    cout << "Enter the number of integers (less than 50): ";
+    cin >> n;
+
+    // Input the array elements
+    cout << "Enter the integers:" << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    // Sort the array in descending order
+    sort(arr, arr + n, greater<int>());
+
+    // Count and display the unique values and their frequencies
+    countFrequencies(arr, n);
+
+    return 0;
+}
